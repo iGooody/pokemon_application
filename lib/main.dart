@@ -1,81 +1,48 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
-import 'pokemon_model.dart';
-import 'pokemon_service.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: PokemonListPage(),
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.yellow,
+      ),
+      home: const MyHomePage(title: 'Pokemon App'),
     );
   }
 }
 
-class PokemonListPage extends StatefulWidget {
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key, required this.title});
+  final String title;
+
   @override
-  _PokemonListPageState createState() => _PokemonListPageState();
+  State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _PokemonListPageState extends State<PokemonListPage> {
-  final PokemonService _pokemonService = PokemonService();
-  List<Pokemon> _pokemonList = [];
-  int _offset = 0;
-  int _limit = 20;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchPokemonList();
-  }
-
-  Future<void> _fetchPokemonList() async {
-    try {
-      final List<Pokemon> pokemonList =
-          await _pokemonService.fetchPokemonList(_offset, _limit);
-      setState(() {
-        _pokemonList.addAll(pokemonList);
-      });
-    } catch (e) {
-      // Handle the error here
-    }
-  }
-
-  Future<void> _loadMorePokemon() async {
-    _offset += _limit;
-    await _fetchPokemonList();
-  }
-
+class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pokémon List'),
-      ),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          title: Center(
+            child: Text(widget.title),
+          )),
       body: ListView.builder(
-        itemCount: _pokemonList.length + 1,
-        itemBuilder: (context, index) {
-          if (index == _pokemonList.length) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Center(
-                child: ElevatedButton(
-                  onPressed: _loadMorePokemon,
-                  child: Text('Load More'),
-                ),
-              ),
-            );
-          } else {
-            final pokemon = _pokemonList[index];
-            return ListTile(
-              title: Text(pokemon.name),
-            );
-          }
-        },
+        itemBuilder: (contex, i) => ListTile(title: Text('Pokemon')),
       ),
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
