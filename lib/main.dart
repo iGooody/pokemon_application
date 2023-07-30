@@ -1,8 +1,9 @@
 // ignore_for_file: prefer_const_constructors
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
+
+import 'features/pokemon_list/view/main.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,56 +22,57 @@ class MyApp extends StatelessWidget {
         dividerColor: Colors.black,
         listTileTheme: ListTileThemeData(iconColor: Colors.black),
         textTheme: TextTheme(
-            bodyMedium: const TextStyle(
-              fontFamily: "Times New Roman",
-              fontWeight: FontWeight.w500,
-              fontSize: 20,
-            ),
-            labelSmall: TextStyle(
-              color: Colors.black.withOpacity(0.8),
-              fontFamily: "Arial",
-              fontWeight: FontWeight.w700,
-              fontSize: 14,
-            )),
+          bodyMedium: const TextStyle(
+            fontFamily: "Times New Roman",
+            fontWeight: FontWeight.w500,
+            fontSize: 20,
+          ),
+          labelSmall: TextStyle(
+            color: Colors.black.withOpacity(0.8),
+            fontFamily: "Arial",
+            fontWeight: FontWeight.w700,
+            fontSize: 14,
+          ),
+        ),
       ),
-      home: const MyHomePage(title: 'Pokemon App'),
+      routes: {
+        '/': (context) => PokemonListScreen(title: "Pokemon App"),
+        '/details': (context) => PokemonDetailsScreen(),
+      },
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+class PokemonDetailsScreen extends StatefulWidget {
+  const PokemonDetailsScreen({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<PokemonDetailsScreen> createState() => _PokemonDetailsScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _PokemonDetailsScreenState extends State<PokemonDetailsScreen> {
+  String? pokemonName;
+
+  @override
+  void didChangeDependencies() {
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args == null) {
+      print('You must provide args');
+      return;
+    }
+    if (args is! String) {
+      print('Args should have string value');
+      return;
+    }
+    pokemonName = args;
+    setState(() {});
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          title: Center(
-            child: Text(widget.title),
-          )),
-      body: ListView.separated(
-        itemCount: 20,
-        separatorBuilder: (context, index) => Divider(),
-        itemBuilder: (contex, i) => ListTile(
-          leading: SvgPicture.asset(
-            'assets/svg/pokeball_icon.svg',
-            height: 40,
-            width: 40,
-          ),
-          title: Text(
-            ' ${i + 1}. Pokemon',
-          ),
-          trailing: Icon(Icons.arrow_forward_ios),
-        ),
-      ),
-      // This trailing comma makes auto-formatting nicer for build methods.
+      appBar: AppBar(title: Text(pokemonName ?? "...")),
     );
   }
 }
