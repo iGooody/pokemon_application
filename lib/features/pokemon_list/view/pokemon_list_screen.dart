@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import '../../widgets/pokemon_list_tile.dart';
 
 class PokemonListScreen extends StatefulWidget {
   const PokemonListScreen({super.key, required this.title});
@@ -23,21 +23,7 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
           separatorBuilder: (context, index) => const Divider(),
           itemBuilder: (contex, i) {
             const pokemonName = 'Pokemon';
-            return ListTile(
-              leading: SvgPicture.asset(
-                'assets/svg/pokeball_icon.svg',
-                height: 40,
-                width: 40,
-              ),
-              title: Text(
-                ' ${i + 1}. $pokemonName',
-              ),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                Navigator.of(context)
-                    .pushNamed('/details', arguments: pokemonName);
-              },
-            );
+            return const PokemonListTile(pokemonName: pokemonName);
           },
           // This trailing comma makes auto-formatting nicer for build methods.
         ));
