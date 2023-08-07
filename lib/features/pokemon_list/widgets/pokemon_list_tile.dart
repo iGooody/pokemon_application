@@ -3,11 +3,13 @@ import 'package:flutter_svg/svg.dart';
 
 class PokemonListTile extends StatelessWidget {
   const PokemonListTile({
-    super.key,
+    Key? key,
     required this.pokemonName,
-  });
+    required this.index,
+  }) : super(key: key);
 
   final String pokemonName;
+  final int index; // Define int index variable here
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class PokemonListTile extends StatelessWidget {
         width: 40,
       ),
       title: Text(
-        ' ${1}. $pokemonName',
+        ' ${index + 1}. $pokemonName', // Display the index before the name
       ),
       trailing: const Icon(Icons.arrow_forward_ios),
       onTap: () {

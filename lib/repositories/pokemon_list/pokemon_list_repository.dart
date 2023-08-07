@@ -1,11 +1,16 @@
 import 'package:dio/dio.dart';
+import 'pokemon_list.dart';
 
-import '../models/pokemon_list_model.dart';
+class PokemonListRepository implements AbstractPokemonRepositorty {
+  PokemonListRepository({
+    required this.dio,
+  });
+  final Dio dio;
 
-class PokemonListRepository {
+  @override
   Future<List<PokemonList>> getPokemonList() async {
     try {
-      final response = await Dio().get('https://pokeapi.co/api/v2/pokemon');
+      final response = await dio.get('https://pokeapi.co/api/v2/pokemon');
       final List<dynamic> results = response.data['results'];
 
       final dataList = results.map((pokemonData) {
@@ -14,7 +19,6 @@ class PokemonListRepository {
           url: pokemonData['url'],
         );
       }).toList();
-      print(dataList);
       return dataList;
     } catch (e) {
       // Handle any errors that may occur during the API call.
