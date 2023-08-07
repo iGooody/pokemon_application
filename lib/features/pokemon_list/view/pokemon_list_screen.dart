@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:pokemon_application/features/pokemon_list/bloc/pokemon_list_bloc.dart';
+import 'package:pokemon_application/theme/theme.dart';
 import '../../../repositories/pokemon_list/pokemon_list.dart';
 import '../widgets/pokemon_list_tile.dart';
 
@@ -13,9 +15,9 @@ class PokemonListScreen extends StatefulWidget {
 }
 
 class _PokemonListScreenState extends State<PokemonListScreen> {
-  List<PokemonList>? _pokemonsList;
-
-  final _pokemonsListBloc = PokemonListBloc();
+  final _pokemonsListBloc = PokemonListBloc(
+    GetIt.I<AbstractPokemonRepositorty>(),
+  );
 
   @override
   void initState() {
@@ -28,20 +30,21 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          title: Center(
-            child: Text(widget.title),
-          )),
-      body: (_pokemonsList == null)
-          ? const Center(
-              child: CircularProgressIndicator.adaptive(),
-            )
-          : ListView.separated(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Center(
+          child: Text(widget.title),
+        ),
+      ),
+      body: BlocBuilder<PokemonListBloc, PokemonListState>(
+        bloc: _pokemonsListBloc,
+        builder: (context, state) {
+          if (state is PokemonListLoaded) {
+            return ListView.separated(
               padding: const EdgeInsets.only(top: 10),
-              itemCount: _pokemonsList!.length,
+              itemCount: state.pokemonList.length,
               separatorBuilder: (context, index) => const Divider(),
               itemBuilder: (contex, i) {
-                final pokemon = _pokemonsList![i];
+                final pokemon = state.pokemonList[i];
                 final pokemonName = pokemon.name;
                 final index = i;
                 return PokemonListTile(
@@ -49,13 +52,36 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
                   index: index,
                 );
               }, // This trailing comma makes auto-formatting nicer for build methods.
-            ),
+            );
+          } else if (state is PokemonListLoadingFailure) {
+            return Center(
+              child: Column(
+                children: [
+                  Text(
+                    'Something went wrong',
+                    style: theme.textTheme.headlineMedium,
+                  ),
+                  Text(
+                    'Please try again later',
+                    style: theme.textTheme.labelSmall?.copyWith(fontSize: 18),
+                  ),
+                ],
+              ),
+            );
+          } else if (state is PokemonListLoading) {
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
+          }
+          return const Center(
+            child: CircularProgressIndicator.adaptive(),
+          );
+        },
+      ),
     );
   }
 
   Future<void> _loadPokemonList() async {
-    _pokemonsList =
-        await GetIt.I<AbstractPokemonRepositorty>().getPokemonList();
     setState(() {});
   }
 }
