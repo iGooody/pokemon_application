@@ -3,4 +3,11 @@ class PokemonList {
   final String url;
 
   PokemonList({required this.name, required this.url});
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'url': url,
+    };
+  }
 }

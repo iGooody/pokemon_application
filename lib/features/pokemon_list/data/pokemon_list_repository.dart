@@ -1,10 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:pokemon_application/repositories/pokemon_list/pokemon_database.dart';
+import 'package:pokemon_application/repositories/pokemon_list/pokemon_list.dart';
 
-import 'abstract_pokemon_list_repository.dart';
-import 'models/models.dart';
-
-class PokemonListRepository implements AbstractPokemonRepositorty {
+class PokemonListRepository {
   final Dio dio;
   final PokemonDatabase database;
 
@@ -13,8 +11,7 @@ class PokemonListRepository implements AbstractPokemonRepositorty {
     required this.database,
   });
 
-  @override
-  Future<List<PokemonList>> getPokemonList() async {
+  Future<Object> getPokemonList() async {
     try {
       final cachedList = await PokemonDatabase.getPokemonListFromDatabase();
       if (cachedList.isNotEmpty) {
@@ -31,11 +28,12 @@ class PokemonListRepository implements AbstractPokemonRepositorty {
         );
       }).toList();
 
-      await PokemonDatabase.savePokemonList(dataList);
+      await PokemonDatabase.savePokemonList(dataList); // Cache the fetched data
       return dataList;
     } catch (e) {
       print('Error fetching Pokemon list: $e');
-      return PokemonDatabase.getPokemonListFromDatabase();
+      return PokemonDatabase
+          .getPokemonListFromDatabase(); // Return cached data on error
     }
   }
 }
