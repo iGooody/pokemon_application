@@ -20,9 +20,15 @@ dev_dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   flutter_lints: ^2.0.2
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true  # Add flutter_bloc package as a dependency
   assets:
     - assets/svg/
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app_icon.png"
 # Other configurations...
+

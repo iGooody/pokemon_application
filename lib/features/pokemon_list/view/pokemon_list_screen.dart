@@ -51,7 +51,7 @@ class _PokemonListScreenState extends State<PokemonListScreen> {
                   pokemonName: pokemonName,
                   index: index,
                 );
-              }, // This trailing comma makes auto-formatting nicer for build methods.
+              },
             );
           } else if (state is PokemonListLoadingFailure) {
             return Center(

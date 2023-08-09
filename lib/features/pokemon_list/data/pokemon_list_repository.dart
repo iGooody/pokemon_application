@@ -28,12 +28,11 @@ class PokemonListRepository {
         );
       }).toList();
 
-      await PokemonDatabase.savePokemonList(dataList); // Cache the fetched data
+      await PokemonDatabase.savePokemonList(dataList);
       return dataList;
     } catch (e) {
       print('Error fetching Pokemon list: $e');
-      return PokemonDatabase
-          .getPokemonListFromDatabase(); // Return cached data on error
+      return PokemonDatabase.getPokemonListFromDatabase();
     }
   }
 }
